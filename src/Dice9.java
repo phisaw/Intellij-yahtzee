@@ -5,7 +5,7 @@ import java.util.Random;
 public class Dice9 {
 
     // scoreCard for all the categories
-    int[] scoreCard;
+    int[][]scoreCard;
     boolean[] categoryBool = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
     // ser till att om kategorin �r redan ett resultat i den kategorin.
 
@@ -33,38 +33,71 @@ public class Dice9 {
     int[] aDice;
     int rollPerTurn = 0;
     int numToSave;
-
+    int nPlayer;
+    int player;
     //
     int y, w;
     int rerollb = 3;
     int rerolla = 0;
     //
 
-    int numOfRounds = 15;
+    int numOfCategories = 15;
 
     public void play() {
         System.out.println("Välkommen till Yatzy\n");
-        scoreCard = new int[15];
-        Arrays.fill(scoreCard, 100);
 
-
-        for (int i = 0; i < numOfRounds; i++) {
-
-            System.out.println("Runda nummer: " + (i + 1));
-            System.out.println();
-            rollAll();
-
-            for (int j = 0; j < 2; j++) {
-                reRollDices();
+        do {
+            try {
+                nPlayer = Integer.parseInt(input("Ange antal spelare: ").trim());
+                if (nPlayer <1){
+                    System.out.println("Det kan inte vara färre än 1 spelare");
+                }
+                else if (nPlayer >4){
+                    System.out.println("Det kan inte vara fler än 4 spelare");
+                }
             }
-            selectCategory();
-            System.out.println("Slut på rundan.\n");
-            if (checkCategory()) {
-                System.out.println("Spelet över!");
-                System.out.println("++++++++++++++++++++++++++++++");
-                System.out.println("Du får antalet poäng : " + allScore());
-                System.exit(0);
+            catch (Exception e){
+                System.out.println("fel inmatning, ange siffror mellan 1-4");
             }
+        }while (nPlayer != 1 && nPlayer != 2 && nPlayer != 3 && nPlayer != 4);
+
+
+
+
+        scoreCard = new int[numOfCategories][nPlayer];
+
+        for (int[] row: scoreCard){
+            Arrays.fill(row, 100);
+        }
+
+//        for (int i = 0; i < 15; i++) {
+//            scoreCard[numOfCategories-1][i] = 100;
+//        }
+
+        //Game starts, with round one and player number one.
+        for (int i = 0; i < numOfCategories; i++) {
+
+            for (int player =1; player <=nPlayer; player++) {
+                System.out.println();
+                System.out.println("Rond Nr: "+(i + 1));
+                System.out.println("Spelare: "+player);
+                System.out.println();
+                rollAll();
+
+                for (int j = 0; j < 2; j++) {
+                    reRollDices();
+                }
+                selectCategory(player-1);
+                System.out.println("Slut på rundan.\n");
+                if (checkCategory(player)) {
+                    System.out.println("Spelet över!");
+                    System.out.println("++++++++++++++++++++++++++++++");
+                    System.out.println("Du får antalet poäng : " + allScore(player));
+                    System.exit(0);
+                }
+            }
+
+
         }
     }
 
@@ -78,101 +111,103 @@ public class Dice9 {
         return diceValue;
     }
 
-    public void selectCategory() {
+    public void selectCategory(int player) {
 
         System.out.println("\n------------");
+        System.out.println("Spelare: " +(player+1));
+        System.out.println("------------");
 
-        if (scoreCard[0] == 100) {
+        if (scoreCard[0][player] == 100) {
             System.out.println("1. Ettor :");
         }
         else
-            System.out.println("1. Ettor :" + scoreCard[0]);
+            System.out.println("1. Ettor :" + scoreCard[0][player]);
 
-        if (scoreCard[1] == 100) {
+        if (scoreCard[1][player] == 100) {
             System.out.println("1. Tvåor :");
         }
         else
-            System.out.println("2. Tvåor :" + scoreCard[1]);
+            System.out.println("2. Tvåor :" + scoreCard[1][player]);
 
-        if (scoreCard[2] == 100) {
+        if (scoreCard[2][player] == 100) {
             System.out.println("3. Treor :");
         }
         else
-            System.out.println("3. Treor :" + scoreCard[2]);
+            System.out.println("3. Treor :" + scoreCard[2][player]);
 
-        if (scoreCard[3] == 100) {
+        if (scoreCard[3][player] == 100) {
             System.out.println("4. Fyror :");
         }
         else
-            System.out.println("4. Fyror :" + scoreCard[3]);
+            System.out.println("4. Fyror :" + scoreCard[3][player]);
 
-        if (scoreCard[4] == 100) {
+        if (scoreCard[4][player] == 100) {
             System.out.println("5. Femor :");
         }
         else
-            System.out.println("5. Femor :" + scoreCard[4]);
+            System.out.println("5. Femor :" + scoreCard[4][player]);
 
-        if (scoreCard[5] == 100) {
+        if (scoreCard[5][player] == 100) {
             System.out.println("6. Sexor :");
         }
         else
-            System.out.println("6. Sexor :" + scoreCard[5]);
+            System.out.println("6. Sexor :" + scoreCard[5][player]);
 
 
         System.out.println();
-        if (scoreCard[6] == 100) {
+        if (scoreCard[6][player] == 100) {
             System.out.println("7. Par :");
         }
         else
-            System.out.println("7. Par :" + scoreCard[6]);
+            System.out.println("7. Par :" + scoreCard[6][player]);
 
-        if (scoreCard[7] == 100) {
+        if (scoreCard[7][player] == 100) {
             System.out.println("8. Två Par :");
         }
         else
-            System.out.println("8. Två Par :" + scoreCard[7]);
+            System.out.println("8. Två Par :" + scoreCard[7][player]);
 
-        if (scoreCard[8] == 100) {
+        if (scoreCard[8][player] == 100) {
             System.out.println("9. Triss :");
         }
         else
-            System.out.println("9. Triss :" + scoreCard[8]);
+            System.out.println("9. Triss :" + scoreCard[8][player]);
 
-        if (scoreCard[9] == 100) {
+        if (scoreCard[9][player] == 100) {
             System.out.println("10. Fyrtal:");
         }
         else
-            System.out.println("10. Fyrtal:" + scoreCard[9]);
+            System.out.println("10. Fyrtal:" + scoreCard[9][player]);
 
-        if (scoreCard[10] == 100) {
+        if (scoreCard[10][player] == 100) {
             System.out.println("11. Kåk :");
         }
         else
-            System.out.println("11. Kåk :" + scoreCard[10]);
+            System.out.println("11. Kåk :" + scoreCard[10][player]);
 
-        if (scoreCard[11] == 100) {
+        if (scoreCard[11][player] == 100) {
             System.out.println("12. Liten Stege :");
         }
         else
-            System.out.println("12. Liten Stege :" + scoreCard[11]);
+            System.out.println("12. Liten Stege :" + scoreCard[11][player]);
 
-        if (scoreCard[12] == 100) {
+        if (scoreCard[12][player] == 100) {
             System.out.println("13. Stor Stege :");
         }
         else
-            System.out.println("13. Stor Stege :" + scoreCard[12]);
+            System.out.println("13. Stor Stege :" + scoreCard[12][player]);
 
-        if (scoreCard[13] == 100) {
+        if (scoreCard[13][player] == 100) {
             System.out.println("14. Chans :");
         }
         else
-            System.out.println("14. Chans :" + scoreCard[13]);
+            System.out.println("14. Chans :" + scoreCard[13][player]);
 
-        if (scoreCard[14] == 100) {
+        if (scoreCard[14][player] == 100) {
             System.out.println("15. Yatzy :");
         }
         else
-            System.out.println("15. Yatzy :" + scoreCard[14]);
+            System.out.println("15. Yatzy :" + scoreCard[14][player]);
 
         System.out.println("------------");
         System.out.println();
@@ -188,7 +223,7 @@ public class Dice9 {
             do {
                 try {
                     category = Integer.parseInt(input("Välj Kategori (1-15) att spara: ").trim());
-                    if (category > numOfRounds) {
+                    if (category > numOfCategories) {
                         System.out.println("Du skrev in fel. För stor ! ");
                     }
                     if (category < 1) {
@@ -206,7 +241,7 @@ public class Dice9 {
                 System.out.println("fel, samma! välj kategori (1-15) igen");
 
             } else {
-                calculateCategoryScore(category);
+                calculateCategoryScore(category, player);
                 categoryBool[category - 1] = true;
                 same = false;
             }
@@ -215,18 +250,18 @@ public class Dice9 {
 
     }
 
-    private int allScore() {
+    private int allScore(int player) {
         int scores = 0;
-        for (int n = 0; n < numOfRounds; n++) {
-            scores += scoreCard[n];
+        for (int n = 0; n < numOfCategories; n++) {
+            scores += scoreCard[n][nPlayer];
         }
         return scores;
     }
 
     // ser till att om alla kategorin.
-    public boolean checkCategory() {
+    public boolean checkCategory(int player) {
         boolean allChoose = false;
-        for (int n = 0; n < numOfRounds; n++) {
+        for (int n = 0; n < numOfCategories; n++) {
             if (categoryBool[n] == false) {
                 allChoose = false;
                 break;
@@ -238,7 +273,7 @@ public class Dice9 {
     }
 
     // r�knar ihop po�ng beroende p� vad man har valt f�r kategori
-    private void calculateCategoryScore(int category) {
+    private void calculateCategoryScore(int category, int player) {
         int score = 0;
 
         // kollar hur mycket po�ng man f�r antal t�rningar av samma
@@ -306,102 +341,104 @@ public class Dice9 {
             }
         }
         // sparar resultatet till r�tt kategori
-        scoreCard[category - 1] = score;
+        scoreCard[category - 1][player] = score;
 
         System.out.println("\n<Resultat>");
-        System.out.println("\n------------");
+        System.out.println("------------");
+        System.out.println("Spelare: " +(player+1));
+        System.out.println("------------");
 
-        if (scoreCard[0] == 100) {
+        if (scoreCard[0][player] == 100) {
             System.out.println("1. Ettor :");
         }
         else
-            System.out.println("1. Ettor :" + scoreCard[0]);
+            System.out.println("1. Ettor :" + scoreCard[0][player]);
 
-        if (scoreCard[1] == 100) {
+        if (scoreCard[1][player] == 100) {
             System.out.println("1. Tvåor :");
         }
         else
-            System.out.println("2. Tvåor :" + scoreCard[1]);
+            System.out.println("2. Tvåor :" + scoreCard[1][player]);
 
-        if (scoreCard[2] == 100) {
+        if (scoreCard[2][player] == 100) {
             System.out.println("3. Treor :");
         }
         else
-            System.out.println("3. Treor :" + scoreCard[2]);
+            System.out.println("3. Treor :" + scoreCard[2][player]);
 
-        if (scoreCard[3] == 100) {
+        if (scoreCard[3][player] == 100) {
             System.out.println("4. Fyror :");
         }
         else
-            System.out.println("4. Fyror :" + scoreCard[3]);
+            System.out.println("4. Fyror :" + scoreCard[3][player]);
 
-        if (scoreCard[4] == 100) {
+        if (scoreCard[4][player] == 100) {
             System.out.println("5. Femor :");
         }
         else
-            System.out.println("5. Femor :" + scoreCard[4]);
+            System.out.println("5. Femor :" + scoreCard[4][player]);
 
-        if (scoreCard[5] == 100) {
+        if (scoreCard[5][player] == 100) {
             System.out.println("6. Sexor :");
         }
         else
-            System.out.println("6. Sexor :" + scoreCard[5]);
+            System.out.println("6. Sexor :" + scoreCard[5][player]);
 
 
         System.out.println();
-        if (scoreCard[6] == 100) {
+        if (scoreCard[6][player] == 100) {
             System.out.println("7. Par :");
         }
         else
-            System.out.println("7. Par :" + scoreCard[6]);
+            System.out.println("7. Par :" + scoreCard[6][player]);
 
-        if (scoreCard[7] == 100) {
+        if (scoreCard[7][player] == 100) {
             System.out.println("8. Två Par :");
         }
         else
-            System.out.println("8. Två Par :" + scoreCard[7]);
+            System.out.println("8. Två Par :" + scoreCard[7][player]);
 
-        if (scoreCard[8] == 100) {
+        if (scoreCard[8][player] == 100) {
             System.out.println("9. Triss :");
         }
         else
-            System.out.println("9. Triss :" + scoreCard[8]);
+            System.out.println("9. Triss :" + scoreCard[8][player]);
 
-        if (scoreCard[9] == 100) {
+        if (scoreCard[9][player] == 100) {
             System.out.println("10. Fyrtal:");
         }
         else
-            System.out.println("10. Fyrtal:" + scoreCard[9]);
+            System.out.println("10. Fyrtal:" + scoreCard[9][player]);
 
-        if (scoreCard[10] == 100) {
+        if (scoreCard[10][player] == 100) {
             System.out.println("11. Kåk :");
         }
         else
-            System.out.println("11. Kåk :" + scoreCard[10]);
+            System.out.println("11. Kåk :" + scoreCard[10][player]);
 
-        if (scoreCard[11] == 100) {
+        if (scoreCard[11][player] == 100) {
             System.out.println("12. Liten Stege :");
         }
         else
-            System.out.println("12. Liten Stege :" + scoreCard[11]);
+            System.out.println("12. Liten Stege :" + scoreCard[11][player]);
 
-        if (scoreCard[12] == 100) {
+        if (scoreCard[12][player] == 100) {
             System.out.println("13. Stor Stege :");
         }
         else
-            System.out.println("13. Stor Stege :" + scoreCard[12]);
+            System.out.println("13. Stor Stege :" + scoreCard[12][player]);
 
-        if (scoreCard[13] == 100) {
+        if (scoreCard[13][player] == 100) {
             System.out.println("14. Chans :");
         }
         else
-            System.out.println("14. Chans :" + scoreCard[13]);
+            System.out.println("14. Chans :" + scoreCard[13][player]);
 
-        if (scoreCard[14] == 100) {
+        if (scoreCard[14][player] == 100) {
             System.out.println("15. Yatzy :");
         }
         else
-            System.out.println("15. Yatzy :" + scoreCard[14]);
+            System.out.println("15. Yatzy :" + scoreCard[14][player]);
 
         System.out.println("------------");
 
